@@ -1,0 +1,136 @@
+<html>
+<head>
+    <script>
+        
+        //題目需要的陣列，歸納我們的字母
+        var letter_arrary ;
+        //使用原因，請看is_have，懶得多寫一個fucntion找index
+        var index;
+
+        //主要function，而且按鍵只觸發getValue()的function
+        function getValue() {
+
+
+            //初始化+清空
+            letter_arrary = [];
+            //取得input的輸入內容
+            var s = document.getElementById("checkletter").value;
+
+
+            //比對字串
+            var i;
+            for (i = 0; i < s.length; i++) {
+                //只找字母
+                if ( is_alphabet(s[i]) ){
+                    //是否收錄陣列
+                    if(is_have(s[i],letter_arrary)){
+                        //有的話則計數
+                        letter_arrary[index][1]+=1;
+                    }else{
+                        //沒的話則收入
+                        letter_arrary.push([s[i],1]);//擴展陣列，與python的append一樣功能
+                    }
+
+                }
+
+            }
+
+
+            //測試用途，如果姊姊有興趣的話，把註解拿掉，在console試試看
+            /*
+            for (var j = 0; j < letter_arrary.length; j++)
+                console.log(letter_arrary[j][0] +":"+ letter_arrary[j][1]);             
+            */
+
+            letter_arrary = arrary_sort(letter_arrary);
+
+            //接下來是請姊姊要補上的部分
+            //作業指定用DOM nodes處理，教學如下
+            //http://www.w3schools.com/js/js_htmldom_nodes.asp  
+
+
+
+
+            //插入對象
+            var table = document.getElementById("table_display");
+
+
+            for (var k = 0; k < letter_arrary.length; k++){
+                //tr = table raw橫列
+                tr = document.createElement("tr");
+                //td = table  data cell格子
+                td1 = document.createElement("td");
+                td2 = document.createElement("td");
+
+                //取得字母和該數量
+                letter = document.createTextNode(letter_arrary[k][0]);
+                number = document.createTextNode(letter_arrary[k][1]);
+
+                console.log(letter_arrary[k][0] + ":" +letter_arrary[k][1]);
+                //內容插入HTML TAG
+                td1.appendChild(letter);
+                td2.appendChild(number);
+
+                tr.appendChild(td1);
+                tr.appendChild(td2);
+
+                table.appendChild(tr);
+            }           
+            
+
+        }
+
+        //--------------------------
+        //關於getValue()內含的fuction
+
+        //判斷是否為字母:只能a~z和A~Z
+        function is_alphabet(letter){
+            if ( ((letter >= "a") && (letter <= "z")) || ((letter >= "A") && (letter <= "Z")) ){
+                return true;
+            }else{
+                return false;                
+            }
+        }
+        //歸類種類:有沒有已經收錄該字母
+        function is_have(letter , arrary){
+            for (var i = 0 ; i < arrary.length ; i++ ){
+                if(arrary[i][0]==letter){
+                    index = i;
+                    return true;
+                }
+            }
+            return false;
+        }
+        function arrary_sort(arrary){
+            //排序，字母出現頻率較高的排到前面
+            for (var a = 0; a < arrary.length ; a++)
+                for (var b = a+1; b < arrary.length ; b++)
+                    if ( arrary[a][1] < arrary[b][1] ){
+                        var temp = arrary[a];
+                        arrary[a] = arrary[b];
+                        arrary[b] = temp;
+                    }
+            return arrary;
+        }
+    </script>
+</head>
+<body>
+    <div id="input_area">
+        Input a word: <input type="text" id="checkletter" value="">
+        <button onclick="getValue();">Show the word</button>
+    </div>
+
+    <div id="display_area">
+        <table  border=1>
+            <thead>
+                <tr>
+                    <td>letter</td>
+                    <td>number</td>
+                </tr>
+            </thead>
+            <tbody id="table_display">
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

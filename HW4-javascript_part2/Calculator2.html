@@ -1,0 +1,106 @@
+<html>
+  <head>
+  <style type="text/css">
+    div.display > input.display{
+      width:400px;
+      height:100px;
+      font-size:50px;
+      text-align:right;
+    }
+    div.display > input.op_register{
+      width:50px;
+      height:100px;
+      font-size:50px;
+    }
+    div.keyboard > input{
+      width:100px;
+      height:100px;
+      font-size:50px;
+    }
+
+  </style>
+  <!---->
+  <script>
+    var input = false ;
+    function go(number){
+      var theText = document.getElementById("display").value;
+      input = true;
+      theText = theText *10 + number ;
+      document.getElementById("display").value = theText;
+    }
+
+
+    var memory = 0 ;
+    var op_register = "";
+    function Calculation(op){      
+      num = document.getElementById("display").value ;
+      if ( op_register == "" ){
+        //開始進行運算時，將面板的數字儲存
+        //否則已經進行運算的話，不要覆寫mem
+        memory = document.getElementById("display").value;
+        
+      }else{
+        //繼續運算，否則為更改運算符號
+        if( input == true ){
+          memory = eval( memory + op_register + num );
+        }        
+      }   
+
+      //接著要撰寫第二個運算子，先初始化 
+      document.getElementById("display").value = 0;
+      input = false;
+      //將新的OP儲存於暫存器
+      op_register = op ;
+      
+
+      //尋找bug專用段落
+      console.log(memory);
+      console.log(op_register);
+      
+
+      //結算時，則消除暫存器
+      //答案顯示於面板上
+
+      if( op == "=" ){
+        op_register = "" ;
+        document.getElementById("display").value = memory;
+      }
+    }
+
+    function Clear(){
+      memory = 0 ;
+      op_register = "";
+      document.getElementById("display").value = 0 ;
+    }
+
+  </script>
+  </head>
+  <body >
+    <div class="display">
+      <input class="display" id="display" type="text" value="0">
+    </div>
+
+    <div class="keyboard">
+      <br><input type="button" value="1" onclick="go(1);">
+      <input type="button" value="2" onclick="go(2);">
+      <input type="button" value="3" onclick="go(3);">
+      <input type="button" value="+" onclick="Calculation('+');">
+
+
+      <br><input type="button" value="4" onclick="go(4);">
+      <input type="button" value="5" onclick="go(5);">
+      <input type="button" value="6" onclick="go(6);">
+      <input type="button" value="-" onclick="Calculation('-');">
+
+      <br><input type="button" value="7" onclick="go(7);">
+      <input type="button" value="8" onclick="go(8);">
+      <input type="button" value="9" onclick="go(9);">
+      <input type="button" value="x" onclick="Calculation('*');">
+
+      <br><input type="button" value="0" onclick="go(0);">
+      <input type="button" value="c" onclick="Clear();">
+      <input type="button" value="=" onclick="Calculation('=');">
+      <input type="button" value="/" onclick="Calculation('/');">
+    </div>
+  </body>
+</html>

@@ -1,0 +1,117 @@
+<html>
+  <head>
+  <style type="text/css">
+    div.display > input.display{
+      width:400px;
+      height:100px;
+      font-size:50px;
+      text-align:right;
+    }
+    div.display > input.op_register{
+      width:50px;
+      height:100px;
+      font-size:50px;s
+    }
+    div.keyboard > input{
+      width:100px;
+      height:100px;
+      font-size:50px;
+    }
+  </style>
+  <script>
+    var init = false ;
+    var input = false ;
+    function go(number){
+      var theText = document.getElementById("display").value;
+      if ( (theText == null) || (init == true) ) {
+        theText = 0 ;
+        init = false;
+      }
+      input = true;
+      theText = theText *10 + number ;
+      document.getElementById("display").value = theText;
+    }
+
+
+    var memory = 0 ;
+    var op_register ;
+    function Calculation(op){
+      num = document.getElementById("display").value
+      op_register = document.getElementById("op_register").value
+      //假設輸入為=
+      if( op == "=" ){
+        //數值不變
+        if ( op_register == "" ){
+          memory = num ;
+        //結算
+        }else{
+          memory = eval( memory + op_register + num );
+          document.getElementById("op_register").value = ""; 
+
+        }
+        document.getElementById("display").value = memory
+      //假設輸入為+ - * /
+      }else{
+        //進入運算狀態
+        if ( op_register == "" ){
+          op_register = op ;
+          memory = num ;
+          input = false
+        }else{
+          //改運算狀態
+          if( input == false ){
+            op_register = op ;
+            memory = num ;
+          //連續運算
+          }else{
+            memory = eval( memory + op_register + num );
+            op_register = op ;
+            input = false;
+          }
+        }        
+        //console.log("input:" + input );
+        document.getElementById("display").value = memory ;
+        document.getElementById("op_register").value = op;
+        init = true;
+      }   
+    }
+
+    function Clear(){
+      input == false;
+      memory = 0 ;
+      op_register = "";
+      document.getElementById("display").value = 0 ;
+    }
+
+  </script>
+  </head>
+  <body >
+    <div class="display">
+      <input class="display" id="display" type="text" value="0">
+      <input class="op_register" id="op_register" type="text" value="">
+    </div>
+
+    <div class="keyboard">
+      <br><input type="button" value="1" onclick="go(1);">
+      <input type="button" value="2" onclick="go(2);">
+      <input type="button" value="3" onclick="go(3);">
+      <input type="button" value="+" onclick="Calculation('+');">
+
+
+      <br><input type="button" value="4" onclick="go(4);">
+      <input type="button" value="5" onclick="go(5);">
+      <input type="button" value="6" onclick="go(6);">
+      <input type="button" value="-" onclick="Calculation('-');">
+
+      <br><input type="button" value="7" onclick="go(7);">
+      <input type="button" value="8" onclick="go(8);">
+      <input type="button" value="9" onclick="go(9);">
+      <input type="button" value="x" onclick="Calculation('*');">
+
+      <br><input type="button" value="0" onclick="go(0);">
+      <input type="button" value="c" onclick="Clear();">
+      <input type="button" value="=" onclick="Calculation('=');">
+      <input type="button" value="/" onclick="Calculation('/');">
+    </div>
+  </body>
+</html>

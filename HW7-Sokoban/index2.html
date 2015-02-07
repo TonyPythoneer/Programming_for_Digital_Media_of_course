@@ -1,0 +1,117 @@
+<html>
+<head>
+    <style type="text/css">
+        .s { background: white; }
+        .w { background: black; }
+        .b { background: blue; }
+        .p { background: lightgray; }
+        .a { background: red; }
+        .y, .Y { background: green; }
+
+        #field div { width: 20px; height: 20px; float: left; }
+        #field {width: 180px; height: 180px; border: thin solid black;}
+    </style>
+ </head>
+<body>
+    <div id="field"></div>
+</body>
+<footer>
+   <script>
+        var levelData = [
+                        "wwwww    ",
+                        "wy  w    ",
+                        "w bbw www",
+                        "w b w wpw",
+                        "www wwwpw",
+                        " ww    pw",
+                        " w   w  w",
+                        " w   wwww",
+                        " wwwww   "
+        ], level = [[], [] ,[] ,[] ,[] ,[] ,[] ,[] ,[]];
+        var x, y, dx, dy, cell, fwdCell, fwd2cell, field = document.getElementById('field');
+        var level_num = 1;
+        var nextmap = [
+                   'wwww     ',
+                   'w  w wwww',
+                   'w  www  w',
+                   'w b b  yw',
+                   'ww    b w',
+                   'w   w   w',
+                   'w   wwwww',
+                   'wpppw    ',
+                   'wwwww    '
+        ];
+
+        //描繪地圖
+        drawmap();
+
+        window.addEventListener('keydown', function(e) {
+            //實體按鍵:上下左右
+            if (e.keyCode == 37) dx = -1, dy = 0;
+            else if (e.keyCode == 39) dx = 1, dy = 0;
+            else if (e.keyCode == 38) dx = 0, dy = -1;
+            else if (e.keyCode == 40) dx = 0, dy = 1;
+            else return;
+
+            //前方是否為牆壁，是的話什麼都不做
+            if ((fwdCell = level[y + dy][x + dx]).className == 'w') return;
+            //取得人物座標下的格子
+            var cell = level[y][x];
+            
+            //b=箱子(box)，a=在點上的箱子(answer),fwdCell=下個格子(forwardCell)
+            if (fwdCell.className == 'b' || fwdCell.className == 'a') {
+                var fwd2cell = level[y + dy + dy][x + dx + dx];
+                //箱子前面有障礙物，什麼都不做
+                if (fwd2cell.className == 'w' || fwd2cell.className == 'b' || fwd2cell.className == 'a')
+                    return;
+                //沒障礙物則移動
+                fwd2cell.className = fwd2cell.className == 'p' ? 'a' : 'b';
+                fwdCell.className = fwdCell.className == 'a' ? 'p' : 's';
+            }
+
+            //前方是否為牆壁，是的話什麼都不做
+            if (fwdCell.className == 'w') return;
+            //前方為空地的移動，同時改變CSS的標記
+            cell.className = cell.className == 'Y' ? 'p' : 's';
+            fwdCell.className = fwdCell.className == 'p' ? 'Y' : 'y';
+            //記錄新的人物座標
+            x += dx; y += dy;
+            //箱子是否被填滿
+            for (var n = 0; n < level.length; n++)
+                for (var m = 0; m < level[n].length; m++) 
+                    if (level[n][m].className == 'b') return;
+            //你贏了!
+            alert('You win!');
+            //跳至下關
+            nextlevel();
+        });
+        function nextlevel(){
+            if ( level_num > 0){
+                //減少關卡
+                level_num = level_num - 1;
+                levelData = nextmap;
+                //關卡清空
+                level = [[], [] ,[] ,[] ,[] ,[] ,[] ,[] ,[]];
+                document.getElementById('field').innerHTML = null;
+                drawmap();
+            }else{
+                alert('finish all game!');
+            }
+        }
+        //描繪地圖
+        function drawmap(){
+            for (var n = 0; n < levelData.length; n++)
+                for (var m = 0; m < levelData[n].length; m++) {
+                    //老師您教的DOM:創造div的html tag
+                    level[n].push(div = document.createElement('div'));
+                    //給予空白的格子，附加css的效果
+                    div.className = levelData[n][m] == ' ' ? 's' : levelData[n][m];
+                    //老師您教的DOM:在HTML插入我的自製div
+                    field.appendChild(div);
+                    //取得人物的座標
+                    if (levelData[n][m] == 'y')  x = m, y = n;
+                }
+        }
+    </script>
+</footer>
+</html>
